@@ -1,0 +1,66 @@
+version: '3'
+services:
+
+  #PHP Service
+  app:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: app
+    # restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - ./www/:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - app-network
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - app-network
+    volumes:
+      - ./www/:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+
+  #MySQL Service
+  db:
+    image: mysql:latest
+    # MySQL 8.0.4 introduces a different password authentication/caching system.  Really messes with docker and laravel.  Reverting to original password method.
+    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+    container_name: mysql8
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: laravel-login
+      MYSQL_ROOT_PASSWORD: derm
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - app-network
+    # Bugged on windows setup.
+    # volumes:
+    #     - ./docker/dbdata:/var/lib/mysql
+    #     - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local

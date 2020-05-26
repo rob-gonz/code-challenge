@@ -18,3 +18,7 @@
 
 * customers
 * login_activity
+
+
+-----
+Please see README-login_app.md for more information on running this submission.
