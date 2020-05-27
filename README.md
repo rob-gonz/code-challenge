@@ -12,7 +12,7 @@ cp www/.env.example www/.env
 docker-compose up -d
 ```
 
-Fill out the database information and other configs as you desire.  Check `docker-compose.yml` mysql section for default root config. This is okay for a quick local dev env. Recommended to create a separate user to more realistically approximate the permissions of the DB user when deployed to production.
+If nothing was modified default configs in .env will be fine for demonstration.  Check `docker-compose.yml` mysql section for default root config. This is okay for a quick local dev env. Recommended to create a separate user to more realistically approximate the permissions of the DB user when deployed to production.
 
 
 ## First time running it?
